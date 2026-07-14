@@ -38,7 +38,7 @@ L'application a besoin de « Python » pour fonctionner. C'est gratuit et rapide
 - **Mac** : double-cliquez sur **Lancer (Mac).command**. La première fois, si macOS affiche un avertissement, faites **clic droit → Ouvrir → Ouvrir**.
 - **Windows** : double-cliquez sur **Lancer (Windows).bat**.
 
-Une fenêtre « Adhésions & inscriptions — assistant » s'ouvre.
+Une **page « Adhésions & inscriptions — assistant » s'ouvre dans votre navigateur**. Une petite fenêtre noire (Terminal) reste ouverte en arrière-plan : c'est normal, **ne la fermez pas** pendant l'utilisation (elle fait tourner l'application). Pour quitter, il suffira de fermer cette fenêtre noire.
 
 ## Étape 4 — Remplir les réglages (une seule fois)
 
@@ -73,7 +73,8 @@ Cliquez sur **📂 Ouvrir les résultats**. Le dossier contient :
 ## En cas de problème
 
 **« Erreur de certificat / CERTIFICATE_VERIFY_FAILED » (Mac)**
-Lancez une fois **Install Certificates.command** (Applications → Python 3.x). Voir Étape 1.
+- Python installé depuis python.org : lancez une fois **Install Certificates.command** (Applications → Python 3.x).
+- Python installé via Homebrew : ouvrez le Terminal et tapez `pip3 install certifi` (l'application l'utilisera automatiquement).
 
 **« Échec d'authentification (403) »**
 La clé est peut-être bloquée ou recopiée avec une espace en trop. Recréez une clé API dans HelloAsso et recollez client_id / client_secret, puis Enregistrer.
