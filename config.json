@@ -1,0 +1,18 @@
+{
+  "adhesion_file": "adhesion-annuelle",
+  "ignorer_fichiers": ["testadhesion"],
+  "forcer": {
+    "yoga": "Yoga",
+    "hata": "Yoga",
+    "vinyasa": "Yoga",
+    "vinysa": "Yoga",
+    "tennis": "Tennis de table",
+    "gymnastique": ["Gym douce", "Pilates", "Stretching", "Body sculpt"],
+    "gym": ["Gym douce", "Pilates", "Stretching", "Body sculpt"],
+    "cardio": ["Zumba", "Step"],
+    "zumba": "Zumba",
+    "eveil": "Eveil corporel (4-5 ans)",
+    "peinture": "Peinture tous supports",
+    "couture": "Couture"
+  }
+}

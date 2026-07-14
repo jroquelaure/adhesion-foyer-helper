@@ -1,0 +1,9 @@
+{
+  "client_id":         "VOTRE_CLIENT_ID",
+  "client_secret":     "VOTRE_CLIENT_SECRET",
+  "organization_slug": "foyer-rural-mondonville",
+  "environnement":     "production",
+  "types_formulaires": ["Membership", "Event"],
+  "saison":            "2025-2026",
+  "exclure":           []
+}

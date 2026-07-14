@@ -1,0 +1,40 @@
+{
+  "adhesion_file": "export-adhesion-adhésion-annuelle-foyer-rural-de-mondonville-2025-2026.csv",
+  "ignorer_fichiers": [
+    "export-adhesion-adhésion-annuelle-2021-22.csv",
+    "export-adhesion-adhésion-annuelle-2022-2023.csv",
+    "export-adhesion-adhésion-annuelle-2023-2024.csv",
+    "export-adhesion-adhésion-annuelle-foyer-rural-de-mondonville-2024-2025.csv",
+    "export-adhesion-testadhésion-annuelle-2024-2025.csv",
+    "export-art-floral-au-foyer-rural-de-mondonville-2024-2025.csv",
+    "export-cardio-step-au-foyer-rural-de-mondonville-2024-2025.csv",
+    "export-couture-au-foyer-rural-de-mondonville-2024-2025.csv",
+    "export-eveil-corporel--4-5-ans--au-foyer-rural-de-mondonville-2024-.csv",
+    "export-gymnastique-au-foyer-rural-de-mondonville-2024-2025.csv",
+    "export-peinture-tous-supports-au-foyer-rural-de-mondonville-2024-20.csv",
+    "export-tennis-de-table-au-foyer-rural-de-mondonville-2024-2025.csv",
+    "export-yoga-au-foyer-rural-de-mondonville-2024-2025.csv",
+    "export-zumba-au-foyer-rural-de-mondonville-2024-2025.csv"
+  ],
+  "forcer": {
+    "export-yoga-vinyasa-au-foyer-rural-de-mondonville-2025-2026.csv": "Yoga",
+    "export-hata-yoga-au-foyer-rural-de-mondonville-2025-2026.csv": "Yoga",
+    "export-rectification-erreur-prélèvements-vinyasa.csv": "Yoga",
+    "export-rectification-erreur-prélèvements-hata.csv": "Yoga",
+    "export-tennis-de-table-au-foyer-rural-de-mondonville-2025-2026.csv": "Tennis de table",
+    "export-tennis-de-table-enfant-au-foyer-rural-de-mondonville-2025-20.csv": "Tennis de table",
+    "export-rectification-erreur-prélèvements-tennis-de-table-adulte.csv": "Tennis de table",
+    "export-rectification-erreur-prélèvements-tennis-de-table-enfant.csv": "Tennis de table",
+    "export-zumba-et-cardio-step-au-foyer-rural-de-mondonville-2025-2026.csv": ["Zumba", "Step"],
+    "export-rectification-erreur-prélèvements-zumba-et-cardio.csv": ["Zumba", "Step"],
+    "export-zumba-enfant-au-foyer-rural-de-mondonville-2025-2026.csv": "Zumba",
+    "export-adhesion-cotisation-cours-zumba.csv": "Zumba",
+    "export-rectification-erreur-prélèvements-zumba-enfant.csv": "Zumba",
+    "export-gymnastique-au-foyer-rural-de-mondonville-2025-2026.csv": ["Gym douce", "Pilates", "Stretching", "Body sculpt"],
+    "export-rectification-erreur-prélèvements-gym.csv": ["Gym douce", "Pilates", "Stretching", "Body sculpt"],
+    "export-eveil-corporel--4-5-ans--au-foyer-rural-de-mondonville-2025-.csv": "Eveil corporel (4-5 ans)",
+    "export-rectification-erreur-prélèvements-éveil-corporel.csv": "Eveil corporel (4-5 ans)",
+    "export-peinture-tous-supports-au-foyer-rural-de-mondonville-2025-20.csv": "Peinture tous supports",
+    "export-couture-au-foyer-rural-de-mondonville-2025-2026.csv": "Couture"
+  }
+}
