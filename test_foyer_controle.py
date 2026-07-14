@@ -377,6 +377,33 @@ def test_routage_libelle_campagne_different_de_ladhesion(tmp_path, write_csv):
     assert not any(r["Nom"] == "PROJETTI" for r in coche)     # plus d'anomalie « à régler »
 
 
+def test_run_preserve_saisie_manuelle(tmp_path, write_csv):
+    adh_headers = ["Référence commande", "Statut de la commande", "Nom adhérent", "Prénom adhérent",
+                   "Email", "Options"]
+    write_csv("export-adhesion-2025-2026.csv", adh_headers,
+              [{"Référence commande": "1", "Statut de la commande": "Validé", "Nom adhérent": "UN",
+                "Prénom adhérent": "Alice", "Email": "a@ex.com", "Options": "Jeux de société"}])
+    (tmp_path / "config.json").write_text(json.dumps({"adhesion_file": "export-adhesion-2025-2026.csv"}),
+                                          encoding="utf-8")
+    sortie = str(tmp_path / "_out")
+    fc.run(str(tmp_path), sortie, "2025-2026")
+
+    # l'utilisateur saisit un n° Gestanet et AJOUTE une colonne "Remarques"
+    path = os.path.join(sortie, "consolide.csv")
+    rows = read_csv(path)
+    cols = list(rows[0].keys()) + ["Remarques"]
+    rows[0]["N° adhérent Gestanet"] = "F3102356"
+    rows[0]["Remarques"] = "payé en espèces"
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=cols, delimiter=";"); w.writeheader(); w.writerows(rows)
+
+    # 2e exécution : les saisies manuelles doivent être conservées
+    fc.run(str(tmp_path), sortie, "2025-2026")
+    r = {x["Nom"]: x for x in read_csv(path)}["UN"]
+    assert r["N° adhérent Gestanet"] == "F3102356"
+    assert r.get("Remarques") == "payé en espèces"
+
+
 def test_run_dossier_vide(tmp_path):
     with pytest.raises(SystemExit):
         fc.run(str(tmp_path), str(tmp_path / "out"), "")

@@ -233,8 +233,41 @@ def ligne_gestanet_depuis_activite(r, activite):
 def ecrire_csv(chemin, entetes, lignes):
     os.makedirs(os.path.dirname(chemin), exist_ok=True)
     with open(chemin, "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=entetes, delimiter=";")
+        w = csv.DictWriter(f, fieldnames=entetes, delimiter=";", extrasaction="ignore")
         w.writeheader(); w.writerows(lignes)
+
+# Colonnes du consolidé remplies à la main par les bénévoles (à préserver d'un run à l'autre)
+COLS_MANUELLES = ["N° adhérent Gestanet", "Statut saisie Gestanet"]
+
+def fusionner_saisie_manuelle(chemin_ancien, consolide, entetes):
+    """Réinjecte les valeurs saisies à la main (n° Gestanet, statut de saisie, et toute colonne
+    ajoutée à droite du tableau) depuis l'ancien consolide.csv, pour ne pas écraser le travail
+    manuel lors d'une nouvelle exécution. Rapprochement par Nom + Prénom."""
+    if not os.path.isfile(chemin_ancien):
+        return entetes
+    try:
+        old = lire_csv(chemin_ancien)
+    except Exception:
+        return entetes
+    if not old:
+        return entetes
+    old_cols = list(old[0].keys())
+    extra = []
+    if "Statut saisie Gestanet" in old_cols:      # colonnes ajoutées par l'utilisateur, à droite du tableau
+        i = old_cols.index("Statut saisie Gestanet")
+        extra = [c for c in old_cols[i + 1:] if c and c not in entetes]
+    old_by = {}
+    for o in old:
+        old_by.setdefault(cle_nom(o.get("Nom"), o.get("Prénom")), o)
+    for row in consolide:
+        o = old_by.get(cle_nom(row.get("Nom"), row.get("Prénom")))
+        if not o:
+            continue
+        for c in COLS_MANUELLES + extra:
+            v = (o.get(c) or "").strip()
+            if v:
+                row[c] = v
+    return entetes + [c for c in extra if c not in entetes]
 
 # ----------------------------------------------------------------------------- traitement
 def run(dossier, sortie, saison, config_path=None):
@@ -456,6 +489,10 @@ def run(dossier, sortie, saison, config_path=None):
         row["N° adhérent Gestanet"] = ""
         row["Statut saisie Gestanet"] = ""
         consolide.append(row)
+
+    # préserver les colonnes saisies à la main depuis le précédent consolide.csv
+    entetes_consolide = fusionner_saisie_manuelle(
+        os.path.join(sortie, "consolide.csv"), consolide, entetes_consolide)
 
     # ---------- Relances ----------
     relance_adh = [{"Email": a["Email"], "Nom": a["Nom"], "Prénom": a["Prénom"], "Activité": a["Activité"],
