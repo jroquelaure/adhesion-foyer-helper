@@ -223,7 +223,7 @@ def run(config_path, sortie, insecure=False, depuis=None, jusqu_a=None, saison=N
     ha.auth()
 
     org = cfg["organization_slug"]
-    types = set(cfg.get("types_formulaires") or ["Membership"])
+    types = set(cfg.get("types_formulaires") or ["Membership", "Event"])
     exclure = set(cfg.get("exclure") or [])
     exclure_contient = [s.lower() for s in (cfg.get("exclure_si_nom_contient") or [])]
 

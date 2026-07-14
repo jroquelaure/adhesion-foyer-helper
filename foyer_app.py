@@ -62,7 +62,7 @@ def sauver_reglages(form):
     if sec:
         cfg["client_secret"] = sec
     cfg.setdefault("environnement", "production")
-    cfg.setdefault("types_formulaires", ["Membership", "Event"])
+    cfg.setdefault("types_formulaires", ["Membership"])
     json.dump(cfg, open(HELLOASSO_JSON, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
 
