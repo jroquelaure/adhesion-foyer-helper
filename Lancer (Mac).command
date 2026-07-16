@@ -29,12 +29,14 @@ if [ -z "$PY" ]; then
   osascript -e 'display dialog "Python est nécessaire mais n’est pas installé.\n\nCliquez sur Installer pour le télécharger et l’installer automatiquement (votre mot de passe administrateur vous sera demandé)." buttons {"Annuler","Installer"} default button "Installer" with title "Adhésions — installation de Python"' >/dev/null 2>&1
   if [ $? -ne 0 ]; then echo "Installation annulée."; exit 1; fi
   PKG="/tmp/python-foyer-${PYVER}.pkg"
-  echo "Téléchargement de Python ${PYVER}…"
+  echo "Téléchargement en cours… merci de patienter."
+  osascript -e 'display notification "Téléchargement en cours… merci de patienter." with title "Adhésions — installation"' >/dev/null 2>&1
   if ! curl -L --fail -o "$PKG" "$PKG_URL"; then
     osascript -e 'display alert "Échec du téléchargement" message "Vérifiez votre connexion Internet, puis relancez. Vous pouvez aussi installer Python manuellement depuis python.org (voir le guide)."'
     exit 1
   fi
-  echo "Installation de Python (mot de passe administrateur requis)…"
+  echo "Installation en cours… merci de patienter (1 à 2 minutes). Votre mot de passe peut être demandé."
+  osascript -e 'display notification "Installation en cours… merci de patienter (1 à 2 minutes)." with title "Adhésions — installation"' >/dev/null 2>&1
   if ! osascript -e "do shell script \"installer -pkg '${PKG}' -target /\" with administrator privileges"; then
     osascript -e 'display alert "Échec de l’installation" message "Vous pouvez installer Python manuellement depuis python.org (voir le guide)."'
     exit 1
@@ -44,6 +46,8 @@ if [ -z "$PY" ]; then
     osascript -e 'display alert "Python installé mais introuvable" message "Redémarrez votre Mac puis relancez l’application."'
     exit 1
   fi
+  echo "Installation terminée. Démarrage de l’application…"
+  osascript -e 'display notification "Installation terminée. Démarrage de l’application." with title "Adhésions"' >/dev/null 2>&1
 fi
 
 # S'assurer que les certificats HTTPS sont disponibles (pour l’API HelloAsso)
