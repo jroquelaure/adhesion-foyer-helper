@@ -12,19 +12,14 @@ Cet outil récupère automatiquement les adhésions et inscriptions depuis **Hel
 
 ---
 
-## Étape 1 — Installer Python (une seule fois)
+## Étape 1 — Python (installé automatiquement)
 
-L'application a besoin de « Python » pour fonctionner. C'est gratuit et rapide.
+L'application a besoin de « Python » pour fonctionner. **Vous n'avez normalement rien à faire** : au tout premier lancement, si Python n'est pas présent sur l'ordinateur, l'outil le **télécharge et l'installe tout seul**.
 
-**Sur Mac**
-1. Allez sur **python.org/downloads**, cliquez sur le bouton jaune (dernière version), installez.
-2. Ouvrez le dossier `Applications > Python 3.x` et double-cliquez sur **Install Certificates.command** (important : évite une erreur de certificat). Une fenêtre s'ouvre, se termine toute seule, vous pouvez la fermer.
+- **Sur Mac** : une fenêtre vous demande votre **mot de passe administrateur** (celui de votre session Mac) pour autoriser l'installation — saisissez-le et cliquez sur Installer. Puis l'application démarre.
+- **Sur Windows** : laissez l'installation se dérouler (1 à 2 minutes), sans rien toucher. L'application démarre ensuite.
 
-**Sur Windows**
-1. Allez sur **python.org/downloads**, cliquez sur le bouton jaune, lancez l'installateur.
-2. **Cochez la case « Add Python to PATH »** en bas de la première fenêtre, puis « Install Now ».
-
-> À ne faire qu'une seule fois, sur l'ordinateur qui servira à la gestion.
+> Solution de secours (si l'installation automatique échoue : pas d'Internet, antivirus, etc.) : installez Python manuellement depuis **python.org/downloads**. Sur Windows, cochez « Add Python to PATH ». Sur Mac (python.org), lancez ensuite « Install Certificates.command ».
 
 ## Étape 2 — Obtenir votre clé API HelloAsso (une seule fois)
 
