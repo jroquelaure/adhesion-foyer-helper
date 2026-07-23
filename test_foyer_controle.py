@@ -404,6 +404,37 @@ def test_run_preserve_saisie_manuelle(tmp_path, write_csv):
     assert r.get("Remarques") == "payé en espèces"
 
 
+def test_commentaire_gestanet_parents_et_tarifs(tmp_path, write_csv):
+    adh_headers = ["Référence commande", "Statut de la commande", "Nom adhérent", "Prénom adhérent",
+                   "Email", "Sexe/Civilité", "Ville", "Options",
+                   "Nom et prénom du père", "Nom et prénom de la mère", "Téléphone du père"]
+    write_csv("export-adhesion-2025-2026.csv", adh_headers, [
+        {"Référence commande": "1", "Statut de la commande": "Validé", "Nom adhérent": "UN",
+         "Prénom adhérent": "Alice", "Email": "a@ex.com", "Sexe/Civilité": "Féminin", "Ville": "daux",
+         "Options": "Yoga; Jeux de société",
+         "Nom et prénom du père": "Jean Un", "Nom et prénom de la mère": "Marie Un",
+         "Téléphone du père": "0611111111"}])
+    write_csv("export-yoga-2025-2026.csv",
+              ["Référence commande", "Statut de la commande", "Nom adhérent", "Prénom adhérent", "Tarif", "Options"],
+              [{"Référence commande": "9", "Statut de la commande": "Validé", "Nom adhérent": "UN",
+                "Prénom adhérent": "Alice", "Tarif": "Adhésion annuelle 1 activité", "Options": "Hata"}])
+    (tmp_path / "config.json").write_text(json.dumps({
+        "adhesion_file": "export-adhesion-2025-2026.csv",
+        "forcer": {"export-yoga-2025-2026.csv": "Yoga"}}), encoding="utf-8")
+
+    sortie = str(tmp_path / "_out")
+    fc.run(str(tmp_path), sortie, "2025-2026")
+
+    yoga = {r["Nom"]: r for r in read_csv(os.path.join(sortie, "gestanet", norm_label("Yoga")))}
+    c = yoga["UN"]["Commentaire"]
+    assert "Père : Jean Un" in c and "Mère : Marie Un" in c
+    assert "Yoga : Adhésion annuelle 1 activité — Hata" in c
+    # le même commentaire (parents + tarifs) apparaît aussi sur l'activité gratuite
+    jeux = {r["Nom"]: r for r in read_csv(os.path.join(sortie, "gestanet", norm_label("Jeux de société")))}
+    assert "Yoga : Adhésion annuelle 1 activité — Hata" in jeux["UN"]["Commentaire"]
+    assert "Père : Jean Un" in jeux["UN"]["Commentaire"]
+
+
 def test_run_dossier_vide(tmp_path):
     with pytest.raises(SystemExit):
         fc.run(str(tmp_path), str(tmp_path / "out"), "")

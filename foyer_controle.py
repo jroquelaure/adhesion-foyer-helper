@@ -375,6 +375,7 @@ def run(dossier, sortie, saison, config_path=None):
     #    si le tarif est illisible, repli sur les cases cochées à l'adhésion.
     inscrits = defaultdict(set)
     rowbykey = defaultdict(dict)     # activité -> {clé: ligne de campagne} (pour non-adhérents)
+    recap_par_cle = defaultdict(list)  # clé -> [ "Activité(s) : Tarif — Options", ... ] (dédoublonné)
     for f, labels in file_labels.items():
         labs = sorted(labels)
         direct = (len(labs) == 1)
@@ -391,6 +392,13 @@ def run(dossier, sortie, saison, config_path=None):
             for a in matched:
                 inscrits[a].add(k)
                 rowbykey[a].setdefault(k, r)
+            if matched:              # trace du tarif/option choisi (précieux pour l'admin)
+                t = (r.get("Tarif") or "").strip()
+                o = (r.get("Options") or "").strip()
+                val = " — ".join(x for x in (t, o) if x)
+                seg = "+".join(sorted(matched)) + (" : " + val if val else "")
+                if seg not in recap_par_cle[k]:
+                    recap_par_cle[k].append(seg)
 
     # ---------- Contrôle A : adhésion manquante ----------
     anomalies_adh, vus = [], set()
@@ -505,6 +513,26 @@ def run(dossier, sortie, saison, config_path=None):
                    f"mais l'inscription (et le paiement) n'a pas été finalisée. Merci de compléter votre inscription."}
         for a in anomalies_coche if a["Email"]]
 
+    # Commentaire Gestanet, IDENTIQUE pour une personne quelle que soit l'activité :
+    # parents (si l'adhérent est un enfant) + récap des tarifs/options de toutes ses activités.
+    # (Gestanet écrase le commentaire à chaque import : on y met donc tout ce qui compte.)
+    def commentaire_personne(k):
+        parts = []
+        src = idx_nom.get(k)
+        if src:
+            pere = (src.get("Nom et prénom du père") or "").strip()
+            mere = (src.get("Nom et prénom de la mère") or "").strip()
+            telp = (src.get("Téléphone du père") or "").strip()
+            telm = (src.get("Téléphone de la mère") or "").strip()
+            par = []
+            if pere: par.append("Père : " + pere + ((" (" + tel(telp) + ")") if telp else ""))
+            if mere: par.append("Mère : " + mere + ((" (" + tel(telm) + ")") if telm else ""))
+            if par:
+                parts.append(" ; ".join(par))
+        if recap_par_cle.get(k):
+            parts.append("Activités : " + " | ".join(recap_par_cle[k]))
+        return " || ".join(parts)
+
     # ---------- Gestanet : UN fichier par ACTIVITÉ (pas par campagne) ----------
     #  - activité AVEC campagne : les inscrits qui ont PAYÉ cette activité (routés par tarif).
     #    Une personne ayant payé gym douce + pilates apparaît dans les DEUX fichiers.
@@ -518,12 +546,21 @@ def run(dossier, sortie, saison, config_path=None):
             for k in sorted(inscrits.get(lbl, set())):
                 src = idx_nom.get(k)
                 if src:
-                    lignes.append(ligne_gestanet_depuis_adhesion(src, lbl))
+                    g = ligne_gestanet_depuis_adhesion(src, lbl)
+                    g["Commentaire"] = commentaire_personne(k)
                 elif src_rows.get(k):
-                    lignes.append(ligne_gestanet_depuis_activite(src_rows[k], lbl))
+                    g = ligne_gestanet_depuis_activite(src_rows[k], lbl)
+                    rc = commentaire_personne(k)
+                    g["Commentaire"] = (rc + " || " if rc else "") + "adhérent autre foyer / état civil à compléter"
+                else:
+                    continue
+                lignes.append(g)
         else:
-            keys = checked_sets.get(lbl, set())     # gratuite / sur place -> cocheurs de l'adhésion
-            lignes = [ligne_gestanet_depuis_adhesion(idx_nom[k], lbl) for k in sorted(keys) if k in idx_nom]
+            for k in sorted(checked_sets.get(lbl, set())):
+                if k in idx_nom:
+                    g = ligne_gestanet_depuis_adhesion(idx_nom[k], lbl)
+                    g["Commentaire"] = commentaire_personne(k)
+                    lignes.append(g)
         if lignes:
             gestanet[lbl] = lignes
 
